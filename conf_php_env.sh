@@ -12,4 +12,4 @@ FLUSH PRIVILEGES;
 CREATE DATABASE Books;
 EOF
 mysql -u root Books < Books.sql
-php -S localhost:8080
+
