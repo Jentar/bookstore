@@ -1,24 +1,9 @@
 
 <?php
-$host = '127.0.0.1';
-$db   = 'Books';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
-try {
-     $pdo = new PDO($dsn, $user, $pass, $options);
-} catch (\PDOException $e) {
-     throw new \PDOException($e->getMessage(), (int)$e->getCode());
-}
+require_once 'db_connection.php';
 
-//var_dump($_GET);
+/* var_dump($_GET); */
 
 $title = $_GET['title'];
 $year = $_GET['year'];
@@ -26,6 +11,8 @@ $stmt = $pdo->prepare('SELECT * FROM books WHERE title LIKE :title AND release_d
 $stmt->execute(['title' => '%' . $title . '%' ,'year'=> $year]);
 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,10 +24,17 @@ $stmt->execute(['title' => '%' . $title . '%' ,'year'=> $year]);
     <style>
         h1 { color: #ff00ae; }
     </style>
+    
 <body>
 
     <h1> Otsing </h1>
-    
+    <?php 
+    require_once 'db_connection.php';
+
+    $year = $_GET['year'];
+    $title = $_GET['title']; 
+    ?>
+
     </form>
     
     
@@ -51,9 +45,13 @@ $stmt->execute(['title' => '%' . $title . '%' ,'year'=> $year]);
     </form>
     <ul>
 <?php
-while ($row = $stmt->fetch())
+
+echo '<ul>';
+while ( $row = $stmt->fetch() ) {
+    echo '<li> <a href=./book.php?id=' .$row['id'] . ">" . $row['title'] . '</a> </li>';
+}
 {
-    echo '<li>' .$row['title'] . "<br><br>";
+    echo '<li>' . $row['title'] . "<br><br>";
 }
 ?>
     </ul>
